@@ -5,15 +5,18 @@ import "forge-std/Script.sol";
 import "forge-std/console.sol";
 import "../src/Agent.sol";
 
-contract AgentCheckScript is Script {
+contract ClaimScript is Script {
     function run() external {
         address deployedContract = vm.envAddress("AGENT_CONTRACT");
         Agent agent = Agent(deployedContract);
 
-        uint agentId = 2;
+        uint agentId = 0;
 
-        string[] memory messages = agent.getMessageHistoryContents(agentId);
+        address caller = agent.getLatestRunOwner(agentId);
+        console.log("Agent owner: ", caller);
 
-        console.log(messages[messages.length - 1]); // last message
+        vm.startBroadcast(caller);
+        agent.claim(agentId);
+        vm.stopBroadcast();
     }
 }
