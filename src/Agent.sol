@@ -23,7 +23,7 @@ contract Agent is ERC20 {
     event AgentRunCreated(
         address indexed owner,
         uint indexed runId,
-        string indexed query
+        string query
     );
 
     address private owner;
@@ -145,7 +145,10 @@ contract Agent is ERC20 {
         IOracle.Content memory lastResponse = getLatestMessageContent(runId);
         address lastOwner = getLatestRunOwner(runId);
         require(lastOwner == msg.sender, "Not owner");
-        require(compareStrings(lastResponse.value, target), "Not target result");
+        require(
+            compareStrings(lastResponse.value, target),
+            "Not target result"
+        );
         require(!claimedRunIds[runId], "Already claimed");
         claimedRunIds[runId] = true;
         _mint(msg.sender, limit);
@@ -231,7 +234,8 @@ contract Agent is ERC20 {
         uint agentId
     ) public view returns (IOracle.Content memory) {
         return
-            agentRuns[agentId].messages[agentRuns[agentId].messagesCount - 1]
+            agentRuns[agentId]
+                .messages[agentRuns[agentId].messagesCount - 1]
                 .content[0];
     }
 
@@ -244,7 +248,7 @@ contract Agent is ERC20 {
     // function getMessageHistoryContents(
     //     uint chatId
     // ) public view returns (IOracle.Message[] memory) {
-    //     return agentRuns[chatId].messages;   
+    //     return agentRuns[chatId].messages;
     // }
 
     // function getMessageHistoryRoles(
