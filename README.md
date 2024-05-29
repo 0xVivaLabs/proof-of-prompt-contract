@@ -11,3 +11,10 @@
 ## Test
 
 `forge test --via-ir`
+
+## Deploy
+
+1. add [office oracle address](https://docs.galadriel.com/oracle-address) to `.env`
+2. Change script `deploy.sh` to use oracle address
+3. `./deploy.sh`
+4. add agent address to `.env`

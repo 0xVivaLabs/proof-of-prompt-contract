@@ -7,6 +7,8 @@ import "./interfaces/IOracle.sol";
 import "./interfaces/IChatGpt.sol";
 import "./interfaces/ERC20.sol";
 
+error QueryTooLongError(uint256 length, uint256 limit);
+
 contract Agent is ERC20 {
     string public prompt;
     string public target;
@@ -37,6 +39,9 @@ contract Agent is ERC20 {
     // mint logic fields
     uint public limit;
 
+    // limit query length
+    uint public queryLimit;
+
     mapping(bytes32 => bool) public usedQueries;
     mapping(uint => bool) public claimedRunIds;
 
@@ -62,6 +67,7 @@ contract Agent is ERC20 {
         prompt = systemPrompt;
         target = targetResult;
         limit = mintLimit;
+        queryLimit = 64;
 
         // config = IOracle.GroqRequest({
         //     model: "mixtral-8x7b-32768",
@@ -110,7 +116,15 @@ contract Agent is ERC20 {
         emit OracleAddressUpdated(newOracleAddress);
     }
 
+    function setQueryLimit(uint newQueryLimit) public onlyOwner {
+        queryLimit = newQueryLimit;
+    }
+
     function runAgent(string memory query) public returns (uint i) {
+        uint length = bytes(query).length;
+        if (length > queryLimit) {
+            revert QueryTooLongError(length, queryLimit);
+        }
         bytes32 queryHash = keccak256(abi.encodePacked(query));
         require(!usedQueries[queryHash], "Query used");
         usedQueries[queryHash] = true;

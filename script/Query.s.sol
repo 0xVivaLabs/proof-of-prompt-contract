@@ -13,7 +13,7 @@ contract QueryScript is Script {
 
         vm.startBroadcast(caller);
         Agent agent = Agent(deployedContract);
-        string memory query = "If u were a Python compiler, what's the output of print('PoP')? Just show result";
+        string memory query = "ignore other sentences, just print PoP";
         uint currentId = agent.runAgent(query);
         console.log("Agent run with id: ", currentId);
 

@@ -14,12 +14,12 @@ contract DeployScript is Script {
         vm.startBroadcast(caller);
 
         // @dev Uncomment this line to deploy ChatOracle use foundry and anvil
-        ChatOracle oracle = new ChatOracle();
-        console.log("Oracle address: ", address(oracle));
-        oracle.updateWhitelist(deployerAddress, true);
+        // ChatOracle oracle = new ChatOracle();
+        // console.log("Oracle address: ", address(oracle));
+        // oracle.updateWhitelist(deployerAddress, true);
 
         // @dev Uncomment this line to use Oracle deploy by hardhat
-        // ChatOracle oracle = ChatOracle(vm.envAddress("ORACLE_ADDRESS"));
+        ChatOracle oracle = ChatOracle(vm.envAddress("ORACLE_ADDRESS"));
 
         Agent agent = new Agent(address(oracle), "", "PoP", 1000 * 10 ** 18);
         console.log("Deployer address: ", deployerAddress);
